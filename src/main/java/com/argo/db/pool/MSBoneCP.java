@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Master-Slave BoneCP
  *
  * @author yaming_deng
- * @date 2013-1-24
+ * 2013-1-24
  */
 public class MSBoneCP extends BoneCP {
 

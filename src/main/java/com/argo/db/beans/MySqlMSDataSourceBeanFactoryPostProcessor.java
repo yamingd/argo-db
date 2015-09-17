@@ -1,7 +1,9 @@
 package com.argo.db.beans;
 
-import com.argo.db.MasterSlaveJdbcTemplate;
+import com.argo.db.MapperConfig;
+import com.argo.db.Roles;
 import com.argo.db.datasource.MySqlMSDataSourceFactoryBean;
+import com.argo.db.mysql.BeanNameUtil;
 import com.argo.db.mysql.MySqlConfigList;
 import com.argo.db.mysql.MySqlMSConfig;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ public class MySqlMSDataSourceBeanFactoryPostProcessor implements BeanFactoryPos
         try {
 
             MySqlConfigList.load();
+            MapperConfig.load();
 
             if (MySqlConfigList.all.getMs() == null || MySqlConfigList.all.getMs().size() == 0){
                 throw new Exception("can't load mysql.yaml or mysql.yaml is empty.");
@@ -43,33 +46,41 @@ public class MySqlMSDataSourceBeanFactoryPostProcessor implements BeanFactoryPos
 
             List<MySqlMSConfig> servers = MySqlConfigList.all.getMs();
             for (MySqlMSConfig entry : servers){
-                this.postAddDataSource(dlbf, entry.getName(), MasterSlaveJdbcTemplate.ROLE_MASTER, entry.getMaster());
-                this.postAddDataSource(dlbf, entry.getName(), MasterSlaveJdbcTemplate.ROLE_SLAVE, entry.getSlave());
+                this.postAddDataSource(dlbf, entry.getName(), Roles.MASTER, entry.getMaster());
+                this.postAddDataSource(dlbf, entry.getName(), Roles.SLAVE, entry.getSlave());
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
 
-    private void postAddDataSource(DefaultListableBeanFactory dlbf, String name, String role, List<String> servers) {
-        String beanName = "DS_" + name + "_" + role;
+    /**
+     * 每个(ip/database, role)为一个单元
+     * serverName 为server serverName
+     * @param dlbf
+     * @param serverName
+     * @param role
+     * @param servers
+     */
+    private void postAddDataSource(DefaultListableBeanFactory dlbf, String serverName, String role, List<String> servers) {
+        String beanName = BeanNameUtil.getDsBeanName(serverName, role);
 
-        logger.info("@@@postAddDataSource, name=" + name + ", role=" + role);
+        logger.info("@@@postAddDataSource, serverName=" + serverName + ", role=" + role);
 
         //datasource
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(MySqlMSDataSourceFactoryBean.class.getName());
-        builder.addPropertyValue("name", name);
+        builder.addPropertyValue("name", serverName);
         builder.addPropertyValue("role", role);
         builder.addPropertyValue("servers", servers);
         dlbf.registerBeanDefinition(beanName, builder.getBeanDefinition());
 
         //transaction
-        if (MasterSlaveJdbcTemplate.ROLE_MASTER.equalsIgnoreCase(role)) {
+        if (Roles.MASTER.equalsIgnoreCase(role)) {
             builder = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class.getName());
             builder.addConstructorArgReference(beanName);
-            dlbf.registerBeanDefinition(name + "Tx", builder.getBeanDefinition());
+            dlbf.registerBeanDefinition(serverName + "Tx", builder.getBeanDefinition());
         }
 
         //jdbc template

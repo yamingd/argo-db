@@ -21,5 +21,7 @@ public class MySqlConfigListTest {
         Assert.assertTrue(MySqlConfigList.all.getMulti().size() > 0);
 
         Assert.assertTrue(MySqlConfigList.all.getMs().size() > 0);
+
+
     }
 }

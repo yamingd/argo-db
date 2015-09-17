@@ -25,11 +25,13 @@ repositories {
     mavenCentral()
 }
 
-description = 'web collections for common cases'
+description = 'db common cases'
 
 dependencies {
     compile 'com.github.yamingd.argo:argo-yaml:1.0'
     compile 'com.github.yamingd.argo:argo-util:2.0'
+    compile 'com.github.yamingd.argo:argo-redis:2.1'
+    compile 'com.github.yamingd.argo:annotations:2.0'
     compile 'org.apache.commons:commons-lang3:3.1'
     compile('org.springframework:spring-context:3.2.11.RELEASE') {
         exclude(module: 'commons-logging')
@@ -39,6 +41,8 @@ dependencies {
     compile('com.jolbox:bonecp:0.8.0.RELEASE') {
         exclude(module: 'guava')
     }
+    compile 'org.aspectj:aspectjrt:1.7.4'
+    compile 'mysql:mysql-connector-java:5.1.32'
     compile 'com.jolbox:bonecp-spring:0.8.0.RELEASE'
     compile 'com.google.guava:guava:18.0'
     compile('org.slf4j:slf4j-api:1.7.5') {

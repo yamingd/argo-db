@@ -26,9 +26,13 @@ public class MySqlConfigList {
         all = YamlTemplate.load(MySqlConfigList.class, confName);
     }
 
+    private boolean printsql;
+
     private List<MySqlConfig> multi;
 
     private List<MySqlMSConfig> ms;
+
+    private List<MySqlShardConfig> shard;
 
     public List<MySqlConfig> getMulti() {
         return multi;
@@ -46,4 +50,31 @@ public class MySqlConfigList {
         this.ms = ms;
     }
 
+    public List<MySqlShardConfig> getShard() {
+        return shard;
+    }
+
+    public void setShard(List<MySqlShardConfig> shard) {
+        this.shard = shard;
+    }
+
+    public boolean isPrintsql() {
+        return printsql;
+    }
+
+    public void setPrintsql(boolean printsql) {
+        this.printsql = printsql;
+    }
+
+    public boolean isMSEnabled(){
+        return ms != null && ms.size() > 0;
+    }
+
+    public boolean isShardEnabled(){
+        return shard != null && shard.size() > 0;
+    }
+
+    public boolean isMultiEnabled(){
+        return multi != null && multi.size() > 0;
+    }
 }

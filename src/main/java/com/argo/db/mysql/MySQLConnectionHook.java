@@ -14,7 +14,7 @@ import java.util.Map;
  * MySQL数据库SQL语句执行Hook
  *
  * @author yaming_deng
- * @date 2013-1-24
+ * 2013-1-24
  */
 public class MySQLConnectionHook extends AbstractConnectionHook {
 	
@@ -27,6 +27,10 @@ public class MySQLConnectionHook extends AbstractConnectionHook {
 //		if(logger.isDebugEnabled()){
 //			logger.debug("onBeforeStatementExecute:{}", internalConnection);
 //		}
+
+		if (MySqlConfigList.all != null && MySqlConfigList.all.isPrintsql()){
+			logger.info(sql);
+		}
 
 	}
 	

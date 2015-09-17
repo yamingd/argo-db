@@ -6,7 +6,6 @@ import com.jolbox.bonecp.BoneCPConfig;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,32 +16,12 @@ public class BoneCPConfigBuilder {
     /**
      * 构造配置
      * @param confName
-     * @return
+     * @return BoneCPConfig
      * @throws IOException
      */
     public static BoneCPConfig build(String confName) throws IOException {
 
-        Map jdbcConfig = null;
-        jdbcConfig = YamlTemplate.load(confName).getData();
-        BoneCPConfig config = new BoneCPConfig();
-        Field[] fields = BoneCPConfig.class.getDeclaredFields();
-        Iterator<Object> itor = jdbcConfig.keySet().iterator();
-        while (itor.hasNext()){
-            String name = (String)itor.next();
-            Object value = jdbcConfig.get(name);
-            for (Field field: fields){
-                if (field.getName().equalsIgnoreCase(name)){
-                    try {
-                        field.setAccessible(true);
-                        field.set(config, value);
-                    } catch (Exception e) {
-                        // should never happen
-                    }
-                }
-
-            }
-        }
-
+        BoneCPConfig config = YamlTemplate.load(BoneCPConfig.class, confName);
         config.setConnectionHook(new MySQLConnectionHook());
         config.setStatisticsEnabled(true);
         config.setDisableJMX(false);
@@ -56,7 +35,7 @@ public class BoneCPConfigBuilder {
      * @param userName
      * @param password
      * @param jdbcConfig
-     * @return
+     * @return BoneCPConfig
      * @throws IOException
      */
     public static BoneCPConfig build(String userName, String password, Map jdbcConfig) throws IOException {
@@ -66,20 +45,17 @@ public class BoneCPConfigBuilder {
 
         BoneCPConfig config = new BoneCPConfig();
         Field[] fields = BoneCPConfig.class.getDeclaredFields();
-        Iterator<Object> itor = jdbcConfig.keySet().iterator();
-        while (itor.hasNext()){
-            String name = (String)itor.next();
-            Object value = jdbcConfig.get(name);
-            for (Field field: fields){
-                if (field.getName().equalsIgnoreCase(name)){
-                    try {
-                        field.setAccessible(true);
-                        field.set(config, value);
-                    } catch (Exception e) {
-                        // should never happen
-                    }
-                }
 
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            Object value = jdbcConfig.get(field.getName());
+            if (null != value){
+                try {
+                    field.setAccessible(true);
+                    field.set(config, value);
+                } catch (Exception e) {
+                    // should never happen
+                }
             }
         }
 

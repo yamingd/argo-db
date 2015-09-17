@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Shard BoneCP
  *
  * @author yaming_deng
- * @date 2013-1-24
+ * 2013-1-24
  */
 public class ShardBoneCP extends BoneCP {
 

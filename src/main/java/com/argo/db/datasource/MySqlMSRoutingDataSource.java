@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 分布式数据源Routing
  *
  * @author yaming_deng
- * @date 2013-1-24
+ * 2013-1-24
  */
 public class MySqlMSRoutingDataSource extends AbstractDataSource implements InitializingBean, DisposableBean {
 	

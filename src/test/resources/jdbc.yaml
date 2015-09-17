@@ -1,5 +1,5 @@
-idleConnectionTestPeriod : 60
-idleMaxAge : 240
+idleConnectionTestPeriodInMinutes : 1
+idleMaxAgeInMinutes : 60
 maxConnectionsPerPartition : 5
 minConnectionsPerPartition : 5
 partitionCount : 3
@@ -10,5 +10,5 @@ queryExecuteTimeLimitInMs : 3000
 initSQL: select 1
 connectionTestStatement: select 1
 poolStrategy: CACHED
-username: test
-password: test
+username: devtest
+password: 123456

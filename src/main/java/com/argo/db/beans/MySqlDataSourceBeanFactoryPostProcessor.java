@@ -1,9 +1,10 @@
 package com.argo.db.beans;
 
 import com.argo.db.datasource.JdbcDatasourceFactoryBean;
+import com.argo.db.mysql.BeanNameUtil;
 import com.argo.db.mysql.MySqlConfig;
 import com.argo.db.mysql.MySqlConfigList;
-import com.argo.db.mysql.MysqlConstants;
+import com.argo.db.mysql.MySqlConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -53,14 +54,14 @@ public class MySqlDataSourceBeanFactoryPostProcessor implements BeanFactoryPostP
     }
 
     private void postAddDataSource(DefaultListableBeanFactory dlbf, MySqlConfig server) {
-        String beanName = "DS_" + server.getName();
+        String beanName = BeanNameUtil.getDsBeanName(server.getName());
 
         logger.info("@@@postAddDataSource, dbid={}", beanName);
 
         //datasource
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(JdbcDatasourceFactoryBean.class.getName());
         builder.addPropertyValue("name", server.getName());
-        builder.addPropertyValue("url", String.format(MysqlConstants.DRIVER_URL_MYSQL, server.getUrl()));
+        builder.addPropertyValue("url", String.format(MySqlConstants.DRIVER_URL_MYSQL, server.getUrl()));
         dlbf.registerBeanDefinition(beanName, builder.getBeanDefinition());
 
         //transaction

@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Master-Slave数据源
  *
  * @author yaming_deng
- * @date 2013-1-24
+ * 2013-1-24
  */
 public class MySqlMSDataSource extends BoneCPDataSource{
 
