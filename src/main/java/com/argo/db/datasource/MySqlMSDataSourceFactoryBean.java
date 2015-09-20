@@ -1,7 +1,7 @@
 package com.argo.db.datasource;
 
 import com.argo.db.BoneCPConfigBuilder;
-import com.argo.db.mysql.MySqlConstants;
+import com.argo.db.mysql.MysqlConstants;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -75,9 +75,9 @@ public class MySqlMSDataSourceFactoryBean implements FactoryBean<MySqlMSRoutingD
 		//M-S数据源
         List<DataSource> sourceList = Lists.newArrayList();
         for (String url : this.servers) {
-            jdbcConfig.setJdbcUrl(String.format(MySqlConstants.DRIVER_URL_MYSQL, url));
+            jdbcConfig.setJdbcUrl(String.format(MysqlConstants.DRIVER_URL_MYSQL, url));
             MySqlMSDataSource master = new MySqlMSDataSource(jdbcConfig, role);
-            master.setDriverClass(MySqlConstants.DRIVER_MYSQL);
+            master.setDriverClass(MysqlConstants.DRIVER_MYSQL);
             master.setRole(role);
             sourceList.add(master);
         }

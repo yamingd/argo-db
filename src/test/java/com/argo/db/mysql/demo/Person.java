@@ -5,18 +5,23 @@ import com.argo.annotation.Table;
 import com.google.common.base.Objects;
 import org.msgpack.annotation.MessagePackMessage;
 
+import java.io.Serializable;
+
 /**
  * Created by yamingd on 9/15/15.
  */
 @Table("person")
 @MessagePackMessage
-public class Person {
+public class Person implements Serializable {
 
     @Column(pk = true, autoIncrement = true)
     private Integer id;
 
-    @Column
+    @Column(maxLength = "200", nullable=false)
     private String name;
+
+    @Column(nullable = false)
+    private String firstName;
 
     public Integer getId() {
         return id;
