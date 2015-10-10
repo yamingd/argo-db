@@ -1,5 +1,6 @@
 package com.argo.db.mysql.demo.mapper;
 
+import com.argo.db.Values;
 import com.argo.db.mysql.TableContext;
 import com.argo.db.mysql.demo.Person;
 import com.argo.db.template.MySqlMapper;
@@ -107,10 +108,19 @@ public class PersonMapper extends MySqlMapper<Person, Integer> {
     }
 
     @Override
+    public List<Person> selectRows(TableContext context, List<Integer> args, boolean ascending) throws DataAccessException {
+        return super.selectRows(context, args.toArray(new Integer[0]), ascending);
+    }
+
+    @Override
     protected Person mapRow(ResultSet rs, int rowIndex) throws SQLException {
         Person item = new Person();
         item.setId(rs.getInt(1));
         item.setName(rs.getString(2));
+
+        String name = Values.getResultSetValue(rs, 2, String.class);
+        item.setName(name);
+
         return item;
     }
 

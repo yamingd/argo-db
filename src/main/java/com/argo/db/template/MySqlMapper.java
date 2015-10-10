@@ -2,6 +2,7 @@ package com.argo.db.template;
 
 import com.argo.db.MapperConfig;
 import com.argo.db.Roles;
+import com.argo.db.SqlMapper;
 import com.argo.db.exception.EntityNotFoundException;
 import com.argo.db.mysql.BeanNameUtil;
 import com.argo.db.mysql.MySqlConfigList;
@@ -21,7 +22,6 @@ import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.*;
@@ -49,8 +49,7 @@ import java.util.*;
  *
  * Created by yamingd on 9/15/15.
  */
-@Repository
-public abstract class MySqlMapper<T, PK extends Comparable> implements InitializingBean, ApplicationContextAware {
+public abstract class MySqlMapper<T, PK extends Comparable> implements InitializingBean, ApplicationContextAware, SqlMapper<T,PK> {
 
     public static final String S_COMMOA = ", ";
     public static final String S_QMARK = "?, ";
@@ -123,47 +122,6 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
     }
 
-    /**
-     * 准备公共常量
-     */
-    public abstract void prepare();
-
-    /**
-     * 数据表名称
-     * @return String
-     */
-    public abstract String getTableName();
-
-    /**
-     *
-     * @param context
-     * @return String
-     */
-    public abstract String getTableName(TableContext context);
-
-    /**
-     *
-     * @return String
-     */
-    public abstract String getPKColumnName();
-
-    /**
-     *
-     * @return String
-     */
-    public abstract String getSelectedColumns();
-
-    /**
-     *
-     * @return List
-     */
-    public abstract List<String> getColumnList();
-
-    /**
-     * 每行实体类
-     * @return Class
-     */
-    public abstract Class<T> getRowClass();
     /**
      *
      * 设置PK 值
@@ -256,12 +214,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return sql;
     }
 
-    /**
-     * 根据主键读取
-     * @param id
-     * @return T
-     */
+    @Override
     public T find(TableContext context, final PK id) throws EntityNotFoundException {
+        if (null == id){
+            return null;
+        }
+
         String cacheKey = null;
         if (cacheEnabled){
             cacheKey = String.format("%s:%s", this.getTableName(), id);
@@ -281,13 +239,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return t;
     }
 
-    /**
-     * 根据主键读取
-     * @param context
-     * @param id
-     * @return T
-     * @throws EntityNotFoundException
-     */
+    @Override
     public T findInMaster(TableContext context, final PK id) throws EntityNotFoundException {
         return findInDb(context, this.jdbcTemplateM, id);
     }
@@ -335,11 +287,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-    /**
-     * 插入记录
-     * @param item
-     * @return boolean
-     */
+    @Override
     public boolean insert(TableContext context, final T item) throws DataAccessException{
         Preconditions.checkNotNull(item);
 
@@ -390,11 +338,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-    /**
-     * 插入批量记录
-     * @param list
-     * @return boolean
-     */
+    @Override
     public boolean insertBatch(TableContext context, final List<T> list) throws DataAccessException{
         Preconditions.checkNotNull(list);
         if (list.size() == 0){
@@ -419,11 +363,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return ret.length == list.size();
     }
 
-    /**
-     * 删除缓存数据
-     * @param id
-     * @return boolean
-     */
+    @Override
     public boolean expire(PK id){
         if (!cacheEnabled){
             return true;
@@ -433,11 +373,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return redisBuket.delete(cacheKey);
     }
 
-    /**
-     * 更新记录, 在子类实现
-     * @param item
-     * @return boolean
-     */
+    @Override
     public boolean update(TableContext context, T item) throws DataAccessException{
         Preconditions.checkNotNull(item);
         return false;
@@ -452,12 +388,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         this.expire(getPkValue(item));
     }
 
-    /**
-     * 更新
-     * @param sql
-     * @param args
-     * @return boolean
-     */
+    @Override
     public boolean update(String sql, final List<Object> args){
 
         int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
@@ -473,14 +404,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return ret > 0;
     }
 
-    /**
-     * 更新记录
-     * @param context
-     * @param values
-     * @param where
-     * @param args
-     * @return boolean
-     */
+    @Override
     public boolean update(TableContext context, String values, String where, final Object... args) throws DataAccessException{
         Preconditions.checkNotNull(values);
         Preconditions.checkNotNull(where);
@@ -502,21 +426,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-    /**
-     * 删除记录
-     * @param item
-     * @return boolean
-     */
+    @Override
     public boolean delete(TableContext context, T item) throws DataAccessException{
         return deleteBy(context, getPkValue(item));
     }
 
-    /**
-     *
-     * @param context
-     * @param id
-     * @return boolean
-     */
+    @Override
     public boolean deleteBy(TableContext context, final PK id) throws DataAccessException{
         Preconditions.checkNotNull(id);
 
@@ -536,13 +451,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return ret > 0;
     }
 
-    /**
-     *
-     * @param context
-     * @param where
-     * @param args
-     * @return boolean
-     */
+    @Override
     public boolean deleteBy(TableContext context, String where, final Object... args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
@@ -563,12 +472,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return ret > 0;
     }
 
-    /**
-     * 读取记录
-     * @param context
-     * @param args
-     * @return List
-     */
+    @Override
     public List<T> selectRows(TableContext context, final PK[] args, final boolean ascending) throws DataAccessException{
         Preconditions.checkNotNull(args);
         if (args.length == 0){
@@ -630,14 +534,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return res;
     }
 
-    /**
-     *
-     * 从数据库读取
-     *
-     * @param context
-     * @param args
-     * @return List
-     */
+    @Override
     public List<T> selectRowsInDb(TableContext context, final List<PK> args, boolean ascending) {
         final StringBuilder s = new StringBuilder(128);
         s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context))
@@ -675,12 +572,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return list;
     }
 
-    /**
-     * 读取记录PK
-     * @param orderBy 不可为null
-     * @param limit 不可为null
-     * @return List
-     */
+    @Override
     public List<PK> selectPKs(TableContext context, String orderBy, final int limit) throws DataAccessException{
         Preconditions.checkNotNull(limit);
         Preconditions.checkNotNull(orderBy);
@@ -704,7 +596,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 List<PK> tmp = new ArrayList<PK>();
 
                 while (rs.next()) {
-                    PK v = (PK)rs.getObject(1);
+                    PK v = (PK) rs.getObject(1);
                     tmp.add(v);
                 }
 
@@ -716,12 +608,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return pkList;
     }
 
-    /**
-     * 读取记录
-     * @param orderBy 不可为null
-     * @param limit 不可为null
-     * @return List
-     */
+    @Override
     public List<T> selectRows(TableContext context, String orderBy, final Integer limit) throws DataAccessException{
         Preconditions.checkNotNull(limit);
         Preconditions.checkNotNull(orderBy);
@@ -758,14 +645,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-    /**
-     * 读取记录
-     * @param where 不可为null
-     * @param orderBy 可为null
-     * @param limit 可为null
-     * @param args 不可为null
-     * @return List
-     */
+    @Override
     public List<T> selectRows(TableContext context, String where, String orderBy, final Integer limit, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
@@ -812,14 +692,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return list;
     }
 
-    /**
-     * 读取记录
-     * @param where 不可为null
-     * @param orderBy 可为null
-     * @param limit 可为null
-     * @param args 不可为null
-     * @return List
-     */
+    @Override
     public List<PK> selectPks(TableContext context, String where, String orderBy, final Integer limit, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
@@ -852,7 +725,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 List<PK> tmp = new ArrayList<PK>();
 
                 while (rs.next()) {
-                    PK v = (PK)rs.getObject(1);
+                    PK v = (PK) rs.getObject(1);
                     tmp.add(v);
                 }
 
@@ -864,14 +737,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return list;
     }
 
-    /**
-     * 读取PK
-     *
-     * @param where 必须
-     * @param args 必须
-     *
-     * @return List
-     */
+    @Override
     public List<PK> selectPKs(TableContext context, String where, String orderBy, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
@@ -910,15 +776,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-    /**
-     *
-     * 查询出一个Map
-     * @param fields 必须
-     * @param where 必须
-     * @param groupBy 可为null
-     * @param args 必须
-     * @return Map
-     */
+    @Override
     public Map<String, Object> selectMap(TableContext context, String fields, String where, String groupBy, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(fields);
         Preconditions.checkNotNull(args);
@@ -968,13 +826,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return map;
     }
 
-    /**
-     * 计算个数
-     *
-     * @param where 必须
-     * @param args 必须
-     * @return int
-     */
+    @Override
     public int count(TableContext context, String where, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
