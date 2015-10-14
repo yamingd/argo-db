@@ -236,7 +236,15 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 redisBuket.set(cacheKey, t);
             }
         }
+
         return t;
+    }
+
+    public abstract PK[] toPKArrays(String pkWithCommas);
+
+    @Override
+    public List<T> findRows(TableContext context, String pkWithCommas, boolean ascending) throws DataAccessException {
+        return this.selectRows(context, toPKArrays(pkWithCommas), ascending);
     }
 
     @Override

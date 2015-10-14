@@ -5,6 +5,7 @@ import com.argo.annotation.Table;
 import com.google.common.base.Objects;
 import org.msgpack.annotation.MessagePackMessage;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 @Table("person")
 @MessagePackMessage
+@Generated("Generate from mysql table")
 public class Person implements Serializable {
 
     @Column(pk = true, autoIncrement = true)

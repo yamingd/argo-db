@@ -53,6 +53,7 @@ public interface SqlMapper<T, PK extends Comparable> {
      */
     Class<T> getRowClass();
 
+
     /**
      * 根据主键读取
      * @param id
@@ -138,7 +139,13 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return boolean
      */
     boolean deleteBy(TableContext context, String where, Object... args) throws DataAccessException;
-
+    /**
+     * 读取记录
+     * @param context
+     * @param pkWithCommas
+     * @return List
+     */
+    List<T> findRows(TableContext context, String pkWithCommas, boolean ascending) throws DataAccessException;
     /**
      * 读取记录
      * @param context
