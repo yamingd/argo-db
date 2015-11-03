@@ -76,6 +76,7 @@ public class MySqlMSDataSourceFactoryBean implements FactoryBean<MySqlMSRoutingD
         List<DataSource> sourceList = Lists.newArrayList();
         for (String url : this.servers) {
             jdbcConfig.setJdbcUrl(String.format(MysqlConstants.DRIVER_URL_MYSQL, url));
+            jdbcConfig.setPoolName(this.name + ":" + this.role);
             MySqlMSDataSource master = new MySqlMSDataSource(jdbcConfig, role);
             master.setDriverClass(MysqlConstants.DRIVER_MYSQL);
             master.setRole(role);
