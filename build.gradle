@@ -1,25 +1,25 @@
 group 'com.github.yamingd.argo'
-version '2.2.0'
+version '2.2.1'
 
 apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'signing'
 
 compileJava {
-    sourceCompatibility=1.7
-    targetCompatibility=1.7
+    sourceCompatibility=1.8
+    targetCompatibility=1.8
     options.encoding='UTF-8'
 }
 
 compileTestJava {
-    sourceCompatibility=1.7
-    targetCompatibility=1.7
+    sourceCompatibility=1.8
+    targetCompatibility=1.8
     options.encoding='UTF-8'
 }
 
 repositories {
     mavenLocal()
-
+    maven {url 'https://oss.sonatype.org/content/groups/public/'}
     maven { url 'http://maven.oschina.net/content/groups/public/' }
 
     mavenCentral()
@@ -28,10 +28,11 @@ repositories {
 description = 'db common cases'
 
 dependencies {
-    compile 'com.github.yamingd.argo:argo-yaml:1.0'
-    compile 'com.github.yamingd.argo:argo-util:2.0'
-    compile 'com.github.yamingd.argo:argo-redis:2.1'
-    compile 'com.github.yamingd.argo:annotations:2.0'
+    compile 'com.github.yamingd.argo:argo-yaml:1.2'
+    compile 'com.github.yamingd.argo:argo-util:2.1'
+    compile 'com.github.yamingd.argo:argo-redis:2.2.0'
+    compile 'com.github.yamingd.argo:annotations:2.2.0'
+
     compile 'org.apache.commons:commons-lang3:3.1'
     compile('org.springframework:spring-context:3.2.11.RELEASE') {
         exclude(module: 'commons-logging')

@@ -17,8 +17,6 @@ import java.util.List;
 /**
  * 
  * 分布式数据源工厂Bean.
- * 
- * Factory --> RoutingDataSource --> DataSource
  *
  * @author yaming_deng
  * 2013-1-24

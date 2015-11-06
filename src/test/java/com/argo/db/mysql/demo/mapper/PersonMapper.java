@@ -76,6 +76,11 @@ public class PersonMapper extends MySqlMapper<Person, Integer> {
         index++;
     }
 
+    @Override
+    public Integer[] toPKArrays(String pkWithCommas) {
+        return new Integer[0];
+    }
+
 
     @Override
     public boolean update(TableContext context, final Person item) throws DataAccessException {
