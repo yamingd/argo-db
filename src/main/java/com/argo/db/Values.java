@@ -117,7 +117,7 @@ public class Values {
             }
         }else if (Integer.class.equals(requiredType)){
             if (java.util.Date.class.equals(value.getClass())){
-                Integer ret = (int)((Date)value).getTime() / 1000;
+                Integer ret = (int)(((Date)value).getTime() / 1000);
                 return (T)ret;
             }
         }
@@ -133,22 +133,22 @@ public class Values {
         if (null == date){
             return null;
         }
-        return (int) date.getTime() / 1000;
+        return (int) (date.getTime() / 1000);
     }
 
     /**
      * 统一时间戳
      * @return
      */
-    public static Integer getNow(){
-        return (int) System.currentTimeMillis() / 1000;
+    public static int getNow(){
+        return (int) (System.currentTimeMillis() / 1000);
     }
 
     /**
      * 统一时间戳
      * @return
      */
-    public static Integer getNowMs(){
-        return (int) System.currentTimeMillis();
+    public static Long getNowMs(){
+        return System.currentTimeMillis();
     }
 }
