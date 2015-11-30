@@ -867,5 +867,31 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         return list.size() == 0 ? 0 : list.get(0);
     }
 
+    @Override
+    public List<T> query(String sql, Object[] args) throws DataAccessException {
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                int i = 0;
+                for (i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+            }
+        }, new ResultSetExtractor<List<T>>() {
+            @Override
+            public List<T> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<T> tmp = new ArrayList<T>();
 
+                int rowNum = 0;
+                while (rs.next()) {
+                    tmp.add(mapRow(rs, rowNum++));
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return list;
+    }
 }

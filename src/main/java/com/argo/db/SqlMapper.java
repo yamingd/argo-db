@@ -239,4 +239,13 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return int
      */
     int count(TableContext context, String where, Object[] args) throws DataAccessException;
+
+    /**
+     * 执行SQL, SQL返回T对象
+     * @param sql SQL语句
+     * @param args 参数
+     * @return List
+     * @throws DataAccessException
+     */
+    List<T> query(String sql, Object[] args) throws DataAccessException;
 }
