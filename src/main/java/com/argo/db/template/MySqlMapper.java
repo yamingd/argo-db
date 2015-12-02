@@ -96,7 +96,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public void afterPropertiesSet() throws Exception{
-        cacheEnabled = redisBuket != null;
+        cacheEnabled = redisBuket != null && MySqlConfigList.all.isMemcache();
         initJdbcTemplate();
         prepare();
     }

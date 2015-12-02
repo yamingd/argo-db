@@ -1,4 +1,5 @@
 printsql: true
+memcache: true
 
 ms:
   - name: s1

@@ -1,5 +1,6 @@
 package com.argo.db.mysql;
 
+import com.argo.db.BoneCPConfigBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,5 +24,10 @@ public class MySqlConfigListTest {
         Assert.assertTrue(MySqlConfigList.all.getMs().size() > 0);
 
 
+    }
+
+    @Test
+    public void testBoneCP() throws Exception {
+        BoneCPConfigBuilder.build("jdbc.yaml");
     }
 }

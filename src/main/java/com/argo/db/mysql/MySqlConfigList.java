@@ -27,6 +27,7 @@ public class MySqlConfigList {
     }
 
     private boolean printsql;
+    private boolean memcache;
 
     private List<MySqlConfig> multi;
 
@@ -76,5 +77,13 @@ public class MySqlConfigList {
 
     public boolean isMultiEnabled(){
         return multi != null && multi.size() > 0;
+    }
+
+    public boolean isMemcache() {
+        return memcache;
+    }
+
+    public void setMemcache(boolean memcache) {
+        this.memcache = memcache;
     }
 }
