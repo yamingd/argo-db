@@ -113,14 +113,21 @@ public class Values {
         if (java.util.Date.class.equals(requiredType)){
             if (value.getClass().equals(Integer.class)){
                 Integer ts = (Integer)value;
-                Object ret = new Date(ts * 1000);
+                Date ret = new Date(ts.longValue() * 1000);
                 return (T)ret;
             }
         }else if (Integer.class.equals(requiredType)){
             if (java.util.Date.class.equals(value.getClass())){
                 Date d = (Date)value;
-                Integer ret = (int)(d.getTime() / 1000);
-                return (T)ret;
+                Long lvalue = d.getTime() / 1000;
+                Integer ret = lvalue.intValue();
+                return (T)(ret);
+            }
+        }else if (Long.class.equals(requiredType)){
+            if (java.util.Date.class.equals(value.getClass())){
+                Date d = (Date)value;
+                Long lvalue = d.getTime();
+                return (T)(lvalue);
             }
         }
         return null;
@@ -152,5 +159,12 @@ public class Values {
      */
     public static Long getNowMs(){
         return System.currentTimeMillis();
+    }
+
+    public static void main(String[] args){
+        Date date = get(1448632229, Date.class);
+        System.out.println(date);
+        Integer intValue = get(date, Integer.class);
+        System.out.println(intValue);
     }
 }
