@@ -112,12 +112,14 @@ public class Values {
         }
         if (java.util.Date.class.equals(requiredType)){
             if (value.getClass().equals(Integer.class)){
-                Object ret = new Date((Integer)value * 1000);
+                Integer ts = (Integer)value;
+                Object ret = new Date(ts * 1000);
                 return (T)ret;
             }
         }else if (Integer.class.equals(requiredType)){
             if (java.util.Date.class.equals(value.getClass())){
-                Integer ret = (int)(((Date)value).getTime() / 1000);
+                Date d = (Date)value;
+                Integer ret = (int)(d.getTime() / 1000);
                 return (T)ret;
             }
         }
