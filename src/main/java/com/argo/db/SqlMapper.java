@@ -90,7 +90,16 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return boolean
      */
     boolean expire(PK id);
-
+    /**
+     * 删除缓存数据
+     * @param ids
+     */
+    void expire(List<PK> ids);
+    /**
+     * 删除缓存数据
+     * @param ids
+     */
+    void expire(PK[] ids);
     /**
      * 更新记录, 在子类实现
      * @param item

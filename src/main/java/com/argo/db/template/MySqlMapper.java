@@ -382,6 +382,30 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     }
 
     @Override
+    public void expire(List<PK> ids) {
+        if (!cacheEnabled){
+            return;
+        }
+        String[] cacheKeys = new String[ids.size()];
+        for (int i = 0; i < ids.size(); i++) {
+            cacheKeys[i] = String.format("%s:%s", this.getTableName(), ids.get(i));
+        }
+        redisBuket.delete(cacheKeys);
+    }
+
+    @Override
+    public void expire(PK[] ids) {
+        if (!cacheEnabled){
+            return;
+        }
+        String[] cacheKeys = new String[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            cacheKeys[i] = String.format("%s:%s", this.getTableName(), ids[i]);
+        }
+        redisBuket.delete(cacheKeys);
+    }
+
+    @Override
     public boolean update(TableContext context, T item) throws DataAccessException{
         Preconditions.checkNotNull(item);
         return false;
