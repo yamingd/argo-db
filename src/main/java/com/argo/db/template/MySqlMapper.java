@@ -3,6 +3,7 @@ package com.argo.db.template;
 import com.argo.db.MapperConfig;
 import com.argo.db.Roles;
 import com.argo.db.SqlMapper;
+import com.argo.db.Values;
 import com.argo.db.exception.EntityNotFoundException;
 import com.argo.db.mysql.BeanNameUtil;
 import com.argo.db.mysql.MySqlConfigList;
@@ -23,6 +24,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
 
@@ -159,6 +162,45 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
      */
     protected abstract void setInsertStatementValues(PreparedStatement ps, T item) throws SQLException;
 
+    /**
+     * 映射数据集到Java Bean
+     * @param rs
+     * @param item
+     * @param setterMethods
+     * @param fieldTypes
+     * @param columnTypes
+     * @throws SQLException
+     */
+    protected void mapResultSetToBean(ResultSet rs, T item,
+                                        Map<String, Method> setterMethods,
+                                        Map<String, Class> fieldTypes, Map<String, Class> columnTypes) throws SQLException {
+
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+
+        for (int index = 1; index <= columnCount; index++) {
+            String column = JdbcUtils.lookupColumnName(rsmd, index);
+            Method method = setterMethods.get(column);
+            if (null == method){
+                logger.error("missing Method Setter. {}, {}, {}", this.getRowClass(), column, method);
+            }else{
+                Class fieldType = fieldTypes.get(column);
+                Class colType = columnTypes.get(column);
+                Object val = JdbcUtils.getResultSetValue(rs, index, colType);
+                if (!colType.equals(fieldType)){
+                    val = Values.get(val, fieldType);
+                }
+                try {
+                    method.invoke(item, val);
+                } catch (IllegalAccessException e) {
+                    logger.error("Set Field Value Error: " + this.getRowClass() + ", " + method, e);
+                } catch (InvocationTargetException e) {
+                    logger.error("Set Field Value Error: " + this.getRowClass() + ", " + method, e);
+                }
+            }
+        }
+
+    }
     /**
      * 构造insert sql
      * @param context
@@ -917,5 +959,18 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         });
 
         return list;
+    }
+
+    @Override
+    public int execute(String sql, Object[] args) throws DataAccessException {
+        return this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                int i = 0;
+                for (i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+            }
+        });
     }
 }

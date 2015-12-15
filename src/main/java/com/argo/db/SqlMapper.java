@@ -52,8 +52,6 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return Class
      */
     Class<T> getRowClass();
-
-
     /**
      * 根据主键读取
      * @param id
@@ -257,4 +255,13 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @throws DataAccessException
      */
     List<T> query(String sql, Object[] args) throws DataAccessException;
+
+    /**
+     * 在Master服务器执行SQL
+     * @param sql SQL语句
+     * @param args 参数
+     * @return int 影响的行数
+     * @throws DataAccessException
+     */
+    int execute(String sql, Object[] args) throws DataAccessException;
 }

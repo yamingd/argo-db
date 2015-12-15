@@ -6,11 +6,13 @@ import com.argo.db.mysql.demo.Person;
 import com.argo.db.template.MySqlMapper;
 import com.google.common.base.Preconditions;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +122,15 @@ public class PersonMapper extends MySqlMapper<Person, Integer> {
     @Override
     protected Person mapRow(ResultSet rs, int rowIndex) throws SQLException {
         Person item = new Person();
+
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+
+        for (int index = 1; index <= columnCount; index++) {
+            String column = JdbcUtils.lookupColumnName(rsmd, index);
+
+        }
+
         item.setId(rs.getInt(1));
         item.setName(rs.getString(2));
 
