@@ -115,6 +115,10 @@ public class Values {
                 Integer ts = (Integer)value;
                 Date ret = new Date(ts.longValue() * 1000);
                 return (T)ret;
+            }else if (value.getClass().equals(Long.class)){
+                Long ts = (Long)value;
+                Date ret = new Date(ts.longValue() * 1000);
+                return (T)ret;
             }
         }else if (Integer.class.equals(requiredType)){
             if (java.util.Date.class.equals(value.getClass())){
@@ -122,12 +126,18 @@ public class Values {
                 Long lvalue = d.getTime() / 1000;
                 Integer ret = lvalue.intValue();
                 return (T)(ret);
+            }else if (Long.class.equals(value.getClass())){
+                Integer ret = ((Long)value).intValue();
+                return (T)(ret);
             }
         }else if (Long.class.equals(requiredType)){
             if (java.util.Date.class.equals(value.getClass())){
                 Date d = (Date)value;
                 Long lvalue = d.getTime();
                 return (T)(lvalue);
+            }else if (Integer.class.equals(value.getClass())){
+                Long ret = ((Integer)value).longValue();
+                return (T)(ret);
             }
         }
         return null;

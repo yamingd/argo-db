@@ -670,7 +670,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 List<PK> tmp = new ArrayList<PK>();
 
                 while (rs.next()) {
-                    PK v = (PK) rs.getObject(1);
+                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
                     tmp.add(v);
                 }
 
@@ -799,7 +799,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 List<PK> tmp = new ArrayList<PK>();
 
                 while (rs.next()) {
-                    PK v = (PK) rs.getObject(1);
+                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
                     tmp.add(v);
                 }
 
@@ -837,7 +837,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 List<PK> personList = new ArrayList<PK>();
 
                 while (rs.next()) {
-                    PK val = (PK) rs.getObject(1);
+                    PK val = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
                     personList.add(val);
                 }
 

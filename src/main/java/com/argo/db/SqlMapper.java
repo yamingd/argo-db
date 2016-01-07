@@ -52,6 +52,12 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return Class
      */
     Class<T> getRowClass();
+
+    /**
+     * 主键类型
+     * @return
+     */
+    Class<PK> getPKClass();
     /**
      * 根据主键读取
      * @param id
