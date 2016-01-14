@@ -16,11 +16,11 @@ public class Values {
 
     /**
      * 获取 ResultSet列的值
-     * @param rs
-     * @param index
-     * @param requiredType
-     * @return
-     * @throws SQLException
+     * @param rs ResultSet
+     * @param index index
+     * @param requiredType requiredType
+     * @return T item
+     * @throws SQLException SQLException
      */
     public static <T> T getResultSetValue(ResultSet rs, int index, Class requiredType) throws SQLException {
         Preconditions.checkNotNull(requiredType);
@@ -98,10 +98,10 @@ public class Values {
 
     /**
      * 转换为Java类型值
-     * @param value
-     * @param requiredType
-     * @param <T>
-     * @return
+     * @param value value
+     * @param requiredType requiredType
+     * @param <T> T
+     * @return T
      */
     public static <T> T get(Object value, Class requiredType){
         if (null == value){
@@ -145,8 +145,8 @@ public class Values {
 
     /**
      * 统一时间戳
-     * @param date
-     * @return
+     * @param date date
+     * @return Integer
      */
     public static Integer getEpoch(Date date){
         if (null == date){
@@ -157,7 +157,7 @@ public class Values {
 
     /**
      * 统一时间戳
-     * @return
+     * @return int
      */
     public static int getNow(){
         return (int) (System.currentTimeMillis() / 1000);
@@ -165,7 +165,7 @@ public class Values {
 
     /**
      * 统一时间戳
-     * @return
+     * @return Long
      */
     public static Long getNowMs(){
         return System.currentTimeMillis();

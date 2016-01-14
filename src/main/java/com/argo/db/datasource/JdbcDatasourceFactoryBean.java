@@ -1,8 +1,7 @@
 package com.argo.db.datasource;
 
-import com.argo.db.BoneCPConfigBuilder;
-import com.jolbox.bonecp.BoneCPConfig;
-import com.jolbox.bonecp.BoneCPDataSource;
+import com.argo.db.JdbcConfig;
+import com.argo.db.Roles;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -11,23 +10,23 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Created by yaming_deng on 14-9-10.
  */
-public class JdbcDatasourceFactoryBean implements FactoryBean<BoneCPDataSource>, InitializingBean, DisposableBean {
+public class JdbcDatasourceFactoryBean implements FactoryBean<MySqlMSDataSource>, InitializingBean, DisposableBean {
 
     public static final String JDBC_YAML = "jdbc.yaml";
     private String confName;
     private String url;
     private String name;
 
-    private BoneCPDataSource dataSource;
+    private MySqlMSDataSource dataSource;
 
     @Override
-    public BoneCPDataSource getObject() throws Exception {
+    public MySqlMSDataSource getObject() throws Exception {
         return dataSource;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return BoneCPDataSource.class;
+        return MySqlMSDataSource.class;
     }
 
     @Override
@@ -38,16 +37,17 @@ public class JdbcDatasourceFactoryBean implements FactoryBean<BoneCPDataSource>,
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        BoneCPConfig config = null;
+        JdbcConfig config = null;
         if (this.getConfName() == null){
-            config = BoneCPConfigBuilder.build(JDBC_YAML);
+            config = JdbcConfig.load(JDBC_YAML);
         }else{
-            config = BoneCPConfigBuilder.build(this.getConfName());
+            config = JdbcConfig.load(this.getConfName());
         }
         if (StringUtils.isNotBlank(this.url)){
-            config.setJdbcUrl(this.url);
+            config.setUrl(this.url);
         }
-        dataSource = new BoneCPDataSource(config);
+        dataSource = new MySqlMSDataSource(config, Roles.MASTER);
+        dataSource.init();
     }
 
     public String getConfName() {

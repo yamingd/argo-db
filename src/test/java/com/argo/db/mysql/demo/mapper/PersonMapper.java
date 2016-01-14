@@ -57,6 +57,11 @@ public class PersonMapper extends MySqlMapper<Person, Integer> {
     }
 
     @Override
+    public Class<Integer> getPKClass() {
+        return Integer.class;
+    }
+
+    @Override
     protected void setPKValue(Person item, KeyHolder holder) {
         item.setId(holder.getKey().intValue());
     }

@@ -9,7 +9,7 @@ public class BeanNameUtil {
 
     /**
      *
-     * @param serverName
+     * @param serverName serverName
      * @return String
      */
     public static String getDsBeanName(String serverName){
@@ -19,8 +19,8 @@ public class BeanNameUtil {
 
     /**
      *
-     * @param serverName
-     * @param role
+     * @param serverName serverName
+     * @param role role
      * @return String
      */
     public static String getDsBeanName(String serverName, String role){
@@ -30,8 +30,8 @@ public class BeanNameUtil {
 
     /**
      *
-     * @param serverName
-     * @param role
+     * @param serverName serverName
+     * @param role role
      * @return String
      */
     public static String getJtBeanName(String serverName, String role){
@@ -41,7 +41,7 @@ public class BeanNameUtil {
 
     /**
      *
-     * @param serverName
+     * @param serverName serverName
      * @return String
      */
     public static String getJtBeanName(String serverName){

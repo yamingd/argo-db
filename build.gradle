@@ -1,5 +1,5 @@
 group 'com.github.yamingd.argo'
-version '2.2.7'
+version '2.3.0'
 
 apply plugin: 'maven'
 apply plugin: 'java'
@@ -19,8 +19,10 @@ compileTestJava {
 
 repositories {
     mavenLocal()
-    maven {url 'https://oss.sonatype.org/content/groups/public/'}
+
     maven { url 'http://maven.oschina.net/content/groups/public/' }
+    maven { url 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url 'http://code.alibabatech.com/mvn/releases/com/alibaba/druid/'}
 
     mavenCentral()
 }
@@ -39,13 +41,12 @@ dependencies {
     }
     compile 'org.springframework:spring-jdbc:3.2.12.RELEASE'
     compile 'org.springframework:spring-tx:3.2.12.RELEASE'
-    compile('com.jolbox:bonecp:0.8.0.RELEASE') {
-        exclude(module: 'guava')
-    }
+    compile 'com.alibaba:druid:1.0.16'
+
     compile 'org.aspectj:aspectjrt:1.8.7'
     compile 'org.aspectj:aspectjweaver:1.8.7'
     compile 'mysql:mysql-connector-java:5.1.36'
-    compile 'com.jolbox:bonecp-spring:0.8.0.RELEASE'
+
     compile 'com.google.guava:guava:18.0'
     compile('org.slf4j:slf4j-api:1.7.5') {
         exclude(module: 'log4j-over-slf4j')

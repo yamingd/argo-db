@@ -1,10 +1,9 @@
 package com.argo.db.datasource;
 
-import com.argo.db.BoneCPConfigBuilder;
+import com.argo.db.JdbcConfig;
 import com.argo.db.mysql.MysqlConstants;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.jolbox.bonecp.BoneCPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -66,18 +65,19 @@ public class MySqlMSDataSourceFactoryBean implements FactoryBean<MySqlMSRoutingD
         Preconditions.checkArgument(this.getServers().size() > 0, "servers is empty");
 
         //1. common config
-        BoneCPConfig jdbcConfig = BoneCPConfigBuilder.build("jdbc.yaml");
+        JdbcConfig jdbcConfig = JdbcConfig.load("jdbc.yaml");
 
 		this.msDataSource = new MySqlMSRoutingDataSource();
 
 		//M-S数据源
         List<DataSource> sourceList = Lists.newArrayList();
         for (String url : this.servers) {
-            jdbcConfig.setJdbcUrl(String.format(MysqlConstants.DRIVER_URL_MYSQL, url));
-            jdbcConfig.setPoolName(this.name + this.role);
+            jdbcConfig.setUrl(String.format(MysqlConstants.DRIVER_URL_MYSQL, url));
+            //jdbcConfig.setPoolName(this.name + this.role);
             MySqlMSDataSource master = new MySqlMSDataSource(jdbcConfig, role);
-            master.setDriverClass(MysqlConstants.DRIVER_MYSQL);
+            master.setDriverClassName(MysqlConstants.DRIVER_MYSQL);
             master.setRole(role);
+            master.init();
             sourceList.add(master);
         }
 

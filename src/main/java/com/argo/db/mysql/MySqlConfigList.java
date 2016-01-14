@@ -16,7 +16,7 @@ public class MySqlConfigList {
 
     /**
      * 加载配置信息
-     * @throws IOException
+     * @throws IOException IOException
      */
     public synchronized static void load() throws IOException {
         if (null != all){

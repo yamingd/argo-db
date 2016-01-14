@@ -129,15 +129,15 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
      *
      * 设置PK 值
      *
-     * @param item
-     * @param holder
+     * @param item Item
+     * @param holder KeyHolder
      */
     protected abstract void setPKValue(T item, KeyHolder holder);
 
     /**
      *
-     * @param item
-     * @return PK
+     * @param item Item
+     * @return PK Primary Key
      */
     protected abstract PK getPkValue(T item);
 
@@ -149,27 +149,27 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     /**
      * 设置
-     * @param rs
-     * @param rowIndex
-     * @return T
+     * @param rs ResultSet
+     * @param rowIndex RowIndex
+     * @return T Item
      */
     protected abstract T mapRow(ResultSet rs, int rowIndex) throws SQLException;
 
     /**
      * 设置
-     * @param ps
-     * @param item
+     * @param ps PreparedStatement
+     * @param item Item
      */
     protected abstract void setInsertStatementValues(PreparedStatement ps, T item) throws SQLException;
 
     /**
      * 映射数据集到Java Bean
-     * @param rs
-     * @param item
-     * @param setterMethods
-     * @param fieldTypes
-     * @param columnTypes
-     * @throws SQLException
+     * @param rs ResultSet
+     * @param item Item
+     * @param setterMethods setterMethods
+     * @param fieldTypes fieldTypes
+     * @param columnTypes columnTypes
+     * @throws SQLException SQLException
      */
     protected void mapResultSetToBean(ResultSet rs, T item,
                                         Map<String, Method> setterMethods,
@@ -201,9 +201,19 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
     }
+
+
+    public JdbcTemplate getJdbcTemplateM() {
+        return jdbcTemplateM;
+    }
+
+    public JdbcTemplate getJdbcTemplateS() {
+        return jdbcTemplateS;
+    }
+
     /**
      * 构造insert sql
-     * @param context
+     * @param context context
      * @return String
      */
     protected String prepareInsertSql(TableContext context){
@@ -295,11 +305,11 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     }
     /**
      * 按主键读取
-     * @param context
-     * @param jdbcTemplate
-     * @param id
-     * @return T
-     * @throws EntityNotFoundException
+     * @param context context
+     * @param jdbcTemplate jdbcTemplate
+     * @param id id
+     * @return T item
+     * @throws EntityNotFoundException EntityNotFoundException
      */
     protected T findInDb(TableContext context, JdbcTemplate jdbcTemplate, final PK id) throws EntityNotFoundException, DataAccessException{
 
@@ -455,8 +465,8 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     /**
      * 更新后
-     * @param context
-     * @param item
+     * @param context context
+     * @param item item
      */
     protected void afterUpdate(TableContext context, T item){
         this.expire(getPkValue(item));
