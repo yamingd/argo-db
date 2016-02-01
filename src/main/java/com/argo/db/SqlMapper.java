@@ -245,6 +245,15 @@ public interface SqlMapper<T, PK extends Comparable> {
     Map<String, Object> selectMap(TableContext context, String fields, String where, String groupBy, Object[] args) throws DataAccessException;
 
     /**
+     *
+     * @param sql
+     * @param args
+     * @return
+     * @throws DataAccessException
+     */
+    Map<String, Object> selectMap(String sql, Object[] args) throws DataAccessException;
+
+    /**
      * 计算个数
      *
      * @param where 必须

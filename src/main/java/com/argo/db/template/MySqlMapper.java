@@ -911,6 +911,47 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     }
 
     @Override
+    public Map<String, Object> selectMap(String sql, Object[] args) throws DataAccessException {
+        Preconditions.checkNotNull(sql);
+        Preconditions.checkNotNull(args);
+
+        Map<String, Object> map = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                for (int i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+            }
+        }, new ResultSetExtractor<Map<String, Object>>() {
+            @Override
+            public Map<String, Object> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                Map<String, Object> map = new HashMap<String, Object>();
+
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnCount = rsmd.getColumnCount();
+
+                while (rs.next()) {
+
+                    for (int i = 1; i <= columnCount; i++) {
+
+                        String column = JdbcUtils.lookupColumnName(rsmd, i);
+                        column.replaceAll(" ", "");
+
+                        map.put(column, JdbcUtils.getResultSetValue(rs, i)); // 定位类型
+
+                    }
+
+                }
+
+                return map;
+            }
+
+        });
+
+        return map;
+    }
+
+    @Override
     public int count(TableContext context, String where, final Object[] args) throws DataAccessException{
         Preconditions.checkNotNull(where);
         Preconditions.checkNotNull(args);
