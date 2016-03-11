@@ -319,7 +319,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
         s.append(getPKColumnName()).append(S_E_Q);
 
-        List<T> list = jdbcTemplate.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("findInDb SQL: {}", sql);
+        }
+
+        List<T> list = jdbcTemplate.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setObject(1, id);
@@ -406,6 +411,9 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         final String sql = prepareInsertSql(context);
+        if (logger.isDebugEnabled()){
+            logger.debug("insertBatch SQL: {}", sql);
+        }
 
         int[] ret = jdbcTemplateM.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
@@ -474,7 +482,9 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public boolean update(String sql, final List<Object> args){
-
+        if (logger.isDebugEnabled()){
+            logger.debug("update SQL: {}", sql);
+        }
         int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
 
             @Override
@@ -497,7 +507,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         final StringBuilder s = new StringBuilder(128);
         s.append(UPDATE).append(getTableName(context)).append(SET).append(values).append(WHERE).append(where);
 
-        int ret = this.jdbcTemplateM.update(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("update SQL: {}", sql);
+        }
+
+        int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.length; i++) {
@@ -523,7 +538,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(DELETE_FROM).append(getTableName(context))
                 .append(WHERE).append(getPKColumnName()).append(S_E_Q);
 
-        int ret = this.jdbcTemplateM.update(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("deleteBy SQL: {}", sql);
+        }
+
+        int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setObject(1, id);
@@ -544,7 +564,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(DELETE_FROM).append(getTableName(context))
                 .append(WHERE).append(where);
 
-        int ret = this.jdbcTemplateM.update(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("deleteBy SQL: {}", sql);
+        }
+
+        int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.length; i++) {
@@ -631,7 +656,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.setLength(s.length() - S_OR.length());
         s.append(ORDER_BY).append(getPKColumnName()).append(ascending ? ASC : DESC);
 
-        List<T> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectRowsInDb SQL: {}", sql);
+        }
+
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.size(); i++) {
@@ -666,7 +696,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(ORDER_BY).append(orderBy);
         s.append(LIMIT_OFFSET);
 
-        List<PK> pkList = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectPKs SQL: {}", sql);
+        }
+
+        List<PK> pkList = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setObject(1, 0);
@@ -702,7 +737,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(ORDER_BY).append(orderBy);
         s.append(LIMIT_OFFSET);
 
-        List<T> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectRows SQL: {}", sql);
+        }
+
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setObject(1, 0);
@@ -746,7 +786,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
             s.append(LIMIT_OFFSET);
         }
 
-        List<T> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectRows SQL: {}", sql);
+        }
+
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 int i = 0;
@@ -791,7 +836,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
             s.append(LIMIT_OFFSET);
         }
 
-        List<PK> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectPks SQL: {}", sql);
+        }
+
+        List<PK> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 int i = 0;
@@ -834,7 +884,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
             s.append(ORDER_BY).append(orderBy);
         }
 
-        List<PK> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectPKs SQL: {}", sql);
+        }
+
+        List<PK> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.length; i++) {
@@ -874,7 +929,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
             s.append(GROUP_BY).append(groupBy);
         }
 
-        Map<String, Object> map = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("selectMap SQL: {}", sql);
+        }
+
+        Map<String, Object> map = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.length; i++) {
@@ -914,6 +974,10 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     public Map<String, Object> selectMap(String sql, Object[] args) throws DataAccessException {
         Preconditions.checkNotNull(sql);
         Preconditions.checkNotNull(args);
+
+        if (logger.isDebugEnabled()){
+            logger.debug("selectMap SQL: {}", sql);
+        }
 
         Map<String, Object> map = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
@@ -960,7 +1024,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(SELECT).append("count(1) from ").append(getTableName(context));
         s.append(WHERE).append(where);
 
-        List<Integer> list = this.jdbcTemplateS.query(s.toString(), new PreparedStatementSetter() {
+        String sql = s.toString();
+        if (logger.isDebugEnabled()){
+            logger.debug("count SQL: {}", sql);
+        }
+
+        List<Integer> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 for (int i = 0; i < args.length; i++) {
@@ -986,6 +1055,10 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public List<T> query(String sql, Object[] args) throws DataAccessException {
+        if (logger.isDebugEnabled()){
+            logger.debug("query SQL: {}", sql);
+        }
+
         List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
@@ -1014,6 +1087,10 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public int execute(String sql, Object[] args) throws DataAccessException {
+        if (logger.isDebugEnabled()){
+            logger.debug("execute SQL: {}", sql);
+        }
+
         return this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
