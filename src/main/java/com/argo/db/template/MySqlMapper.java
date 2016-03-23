@@ -93,6 +93,8 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     protected ApplicationContext applicationContext;
 
+    protected boolean printSQL = false;
+
     public MySqlMapper(){
 
     }
@@ -102,6 +104,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         cacheEnabled = redisBuket != null && MySqlConfigList.all.isMemcache();
         initJdbcTemplate();
         prepare();
+        printSQL = MySqlConfigList.all.isPrintsql();
     }
 
     @Override
@@ -320,7 +323,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(getPKColumnName()).append(S_E_Q);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("findInDb SQL: {}", sql);
         }
 
@@ -357,7 +360,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         Preconditions.checkNotNull(item);
 
         final String sql = prepareInsertSql(context);
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("SQL Statement: {}", sql);
         }
         if (isPKAutoIncr()) {
@@ -411,7 +414,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         final String sql = prepareInsertSql(context);
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("insertBatch SQL: {}", sql);
         }
 
@@ -482,7 +485,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public boolean update(String sql, final List<Object> args){
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("update SQL: {}", sql);
         }
         int ret = this.jdbcTemplateM.update(sql, new PreparedStatementSetter() {
@@ -508,7 +511,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(UPDATE).append(getTableName(context)).append(SET).append(values).append(WHERE).append(where);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("update SQL: {}", sql);
         }
 
@@ -539,7 +542,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 .append(WHERE).append(getPKColumnName()).append(S_E_Q);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("deleteBy SQL: {}", sql);
         }
 
@@ -565,7 +568,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 .append(WHERE).append(where);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("deleteBy SQL: {}", sql);
         }
 
@@ -657,7 +660,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(ORDER_BY).append(getPKColumnName()).append(ascending ? ASC : DESC);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectRowsInDb SQL: {}", sql);
         }
 
@@ -697,7 +700,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(LIMIT_OFFSET);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectPKs SQL: {}", sql);
         }
 
@@ -738,7 +741,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(LIMIT_OFFSET);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectRows SQL: {}", sql);
         }
 
@@ -787,7 +790,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectRows SQL: {}", sql);
         }
 
@@ -837,7 +840,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectPks SQL: {}", sql);
         }
 
@@ -885,7 +888,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectPKs SQL: {}", sql);
         }
 
@@ -930,7 +933,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         }
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectMap SQL: {}", sql);
         }
 
@@ -975,7 +978,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         Preconditions.checkNotNull(sql);
         Preconditions.checkNotNull(args);
 
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("selectMap SQL: {}", sql);
         }
 
@@ -1025,7 +1028,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         s.append(WHERE).append(where);
 
         String sql = s.toString();
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("count SQL: {}", sql);
         }
 
@@ -1055,7 +1058,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public List<T> query(String sql, Object[] args) throws DataAccessException {
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("query SQL: {}", sql);
         }
 
@@ -1087,7 +1090,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public int execute(String sql, Object[] args) throws DataAccessException {
-        if (logger.isDebugEnabled()){
+        if (logger.isDebugEnabled() && printSQL){
             logger.debug("execute SQL: {}", sql);
         }
 
@@ -1100,5 +1103,39 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 }
             }
         });
+    }
+
+
+    @Override
+    public int count(String sql, Object[] args) throws DataAccessException {
+        Preconditions.checkNotNull(sql);
+        Preconditions.checkNotNull(args);
+
+        if (logger.isDebugEnabled() && printSQL){
+            logger.debug("count SQL: {}", sql);
+        }
+
+        List<Integer> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                for (int i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+            }
+        }, new ResultSetExtractor<List<Integer>>() {
+            @Override
+            public List<Integer> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<Integer> tmp = new ArrayList<Integer>();
+
+                while (rs.next()) {
+                    tmp.add(rs.getInt(1));
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return list.size() == 0 ? 0 : list.get(0);
     }
 }

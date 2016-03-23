@@ -272,6 +272,14 @@ public interface SqlMapper<T, PK extends Comparable> {
     List<T> query(String sql, Object[] args) throws DataAccessException;
 
     /**
+     * 计算个数
+     * @param sql
+     * @param args
+     * @return
+     * @throws DataAccessException
+     */
+    int count(String sql, Object[] args) throws DataAccessException;
+    /**
      * 在Master服务器执行SQL
      * @param sql SQL语句
      * @param args 参数
