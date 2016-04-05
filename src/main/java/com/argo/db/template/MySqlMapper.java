@@ -691,187 +691,22 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     @Override
     public List<PK> selectPKs(TableContext context, String orderBy, final int limit) throws DataAccessException{
-        Preconditions.checkNotNull(limit);
-        Preconditions.checkNotNull(orderBy);
-
-        final StringBuilder s = new StringBuilder(128);
-        s.append(SELECT).append(getPKColumnName()).append(FROM).append(getTableName(context));
-        s.append(ORDER_BY).append(orderBy);
-        s.append(LIMIT_OFFSET);
-
-        String sql = s.toString();
-        if (logger.isDebugEnabled() && printSQL){
-            logger.debug("selectPKs SQL: {}", sql);
-        }
-
-        List<PK> pkList = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setObject(1, 0);
-                ps.setObject(2, limit);
-            }
-
-        }, new ResultSetExtractor<List<PK>>() {
-            @Override
-            public List<PK> extractData(ResultSet rs) throws SQLException, DataAccessException {
-
-                List<PK> tmp = new ArrayList<PK>();
-
-                while (rs.next()) {
-                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
-                    tmp.add(v);
-                }
-
-                return tmp;
-            }
-
-        });
-
-        return pkList;
+        return this.selectPKs(context, orderBy, 0, limit);
     }
 
     @Override
     public List<T> selectRows(TableContext context, String orderBy, final Integer limit) throws DataAccessException{
-        Preconditions.checkNotNull(limit);
-        Preconditions.checkNotNull(orderBy);
-
-        final StringBuilder s = new StringBuilder(128);
-        s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context));
-        s.append(ORDER_BY).append(orderBy);
-        s.append(LIMIT_OFFSET);
-
-        String sql = s.toString();
-        if (logger.isDebugEnabled() && printSQL){
-            logger.debug("selectRows SQL: {}", sql);
-        }
-
-        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setObject(1, 0);
-                ps.setObject(2, limit);
-            }
-
-        }, new ResultSetExtractor<List<T>>() {
-            @Override
-            public List<T> extractData(ResultSet rs) throws SQLException, DataAccessException {
-
-                List<T> tmp = new ArrayList<T>();
-
-                int rowNum = 0;
-                while (rs.next()) {
-                    tmp.add(mapRow(rs, rowNum++));
-                }
-
-                return tmp;
-            }
-
-        });
-
-        return list;
-
+        return this.selectRows(context, orderBy, 0, limit);
     }
 
     @Override
     public List<T> selectRows(TableContext context, String where, String orderBy, final Integer limit, final Object[] args) throws DataAccessException{
-        Preconditions.checkNotNull(where);
-        Preconditions.checkNotNull(args);
-
-        final StringBuilder s = new StringBuilder(128);
-        s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context));
-        if (null != where) {
-            s.append(WHERE).append(where);
-        }
-        if (null != orderBy){
-            s.append(ORDER_BY).append(orderBy);
-        }
-        if (null != limit){
-            s.append(LIMIT_OFFSET);
-        }
-
-        String sql = s.toString();
-        if (logger.isDebugEnabled() && printSQL){
-            logger.debug("selectRows SQL: {}", sql);
-        }
-
-        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                int i = 0;
-                for (i = 0; i < args.length; i++) {
-                    ps.setObject(i + 1, args[i]);
-                }
-                if (null != limit) {
-                    ps.setObject(i + 1, 0);
-                    ps.setObject(i + 2, limit);
-                }
-            }
-        }, new ResultSetExtractor<List<T>>() {
-            @Override
-            public List<T> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                List<T> tmp = new ArrayList<T>();
-
-                int rowNum = 0;
-                while (rs.next()) {
-                    tmp.add(mapRow(rs, rowNum++));
-                }
-
-                return tmp;
-            }
-
-        });
-
-        return list;
+        return this.selectRows(context, where, orderBy, 0, limit, args);
     }
 
     @Override
     public List<PK> selectPks(TableContext context, String where, String orderBy, final Integer limit, final Object[] args) throws DataAccessException{
-        Preconditions.checkNotNull(where);
-        Preconditions.checkNotNull(args);
-        Preconditions.checkNotNull(orderBy);
-
-        final StringBuilder s = new StringBuilder(128);
-        s.append(SELECT).append(getPKColumnName()).append(FROM).append(getTableName(context));
-        s.append(WHERE).append(where);
-        s.append(ORDER_BY).append(orderBy);
-
-        if (null != limit){
-            s.append(LIMIT_OFFSET);
-        }
-
-        String sql = s.toString();
-        if (logger.isDebugEnabled() && printSQL){
-            logger.debug("selectPks SQL: {}", sql);
-        }
-
-        List<PK> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                int i = 0;
-                for (i = 0; i < args.length; i++) {
-                    ps.setObject(i + 1, args[i]);
-                }
-                if (null != limit) {
-                    ps.setObject(i + 1, 0);
-                    ps.setObject(i + 2, limit);
-                }
-            }
-        }, new ResultSetExtractor<List<PK>>() {
-            @Override
-            public List<PK> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                List<PK> tmp = new ArrayList<PK>();
-
-                while (rs.next()) {
-                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
-                    tmp.add(v);
-                }
-
-                return tmp;
-            }
-
-        });
-
-        return list;
+        return this.selectPks(context, where, orderBy, 0, limit, args);
     }
 
     @Override
@@ -1137,5 +972,190 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
         });
 
         return list.size() == 0 ? 0 : list.get(0);
+    }
+
+    @Override
+    public List<PK> selectPKs(TableContext context, String orderBy, int offset, int limit) throws DataAccessException {
+        Preconditions.checkNotNull(limit);
+        Preconditions.checkNotNull(orderBy);
+
+        final StringBuilder s = new StringBuilder(128);
+        s.append(SELECT).append(getPKColumnName()).append(FROM).append(getTableName(context));
+        s.append(ORDER_BY).append(orderBy);
+        s.append(LIMIT_OFFSET);
+
+        String sql = s.toString();
+        if (logger.isDebugEnabled() && printSQL){
+            logger.debug("selectPKs SQL: {}", sql);
+        }
+
+        List<PK> pkList = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setObject(1, offset);
+                ps.setObject(2, limit);
+            }
+
+        }, new ResultSetExtractor<List<PK>>() {
+            @Override
+            public List<PK> extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+                List<PK> tmp = new ArrayList<PK>();
+
+                while (rs.next()) {
+                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
+                    tmp.add(v);
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return pkList;
+    }
+
+    @Override
+    public List<T> selectRows(TableContext context, String orderBy, Integer offset, Integer limit) throws DataAccessException {
+        Preconditions.checkNotNull(limit);
+        Preconditions.checkNotNull(orderBy);
+
+        final StringBuilder s = new StringBuilder(128);
+        s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context));
+        s.append(ORDER_BY).append(orderBy);
+        s.append(LIMIT_OFFSET);
+
+        String sql = s.toString();
+        if (logger.isDebugEnabled() && printSQL){
+            logger.debug("selectRows SQL: {}", sql);
+        }
+
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setObject(1, offset);
+                ps.setObject(2, limit);
+            }
+
+        }, new ResultSetExtractor<List<T>>() {
+            @Override
+            public List<T> extractData(ResultSet rs) throws SQLException, DataAccessException {
+
+                List<T> tmp = new ArrayList<T>();
+
+                int rowNum = 0;
+                while (rs.next()) {
+                    tmp.add(mapRow(rs, rowNum++));
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return list;
+    }
+
+    @Override
+    public List<T> selectRows(TableContext context, String where, String orderBy, Integer offset, Integer limit, Object[] args) throws DataAccessException {
+        Preconditions.checkNotNull(where);
+        Preconditions.checkNotNull(args);
+
+        final StringBuilder s = new StringBuilder(128);
+        s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context));
+        if (null != where) {
+            s.append(WHERE).append(where);
+        }
+        if (null != orderBy){
+            s.append(ORDER_BY).append(orderBy);
+        }
+        if (null != limit){
+            Preconditions.checkNotNull(offset);
+            s.append(LIMIT_OFFSET);
+        }
+
+        String sql = s.toString();
+        if (logger.isDebugEnabled() && printSQL){
+            logger.debug("selectRows SQL: {}", sql);
+        }
+
+        List<T> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                int i = 0;
+                for (i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+                if (null != limit) {
+                    ps.setObject(i + 1, offset);
+                    ps.setObject(i + 2, limit);
+                }
+            }
+        }, new ResultSetExtractor<List<T>>() {
+            @Override
+            public List<T> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<T> tmp = new ArrayList<T>();
+
+                int rowNum = 0;
+                while (rs.next()) {
+                    tmp.add(mapRow(rs, rowNum++));
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return list;
+    }
+
+    @Override
+    public List<PK> selectPks(TableContext context, String where, String orderBy, Integer offset, Integer limit, Object[] args) throws DataAccessException {
+        Preconditions.checkNotNull(where);
+        Preconditions.checkNotNull(args);
+        Preconditions.checkNotNull(orderBy);
+
+        final StringBuilder s = new StringBuilder(128);
+        s.append(SELECT).append(getPKColumnName()).append(FROM).append(getTableName(context));
+        s.append(WHERE).append(where);
+        s.append(ORDER_BY).append(orderBy);
+
+        if (null != limit){
+            s.append(LIMIT_OFFSET);
+        }
+
+        String sql = s.toString();
+        if (logger.isDebugEnabled() && printSQL){
+            logger.debug("selectPks SQL: {}", sql);
+        }
+
+        List<PK> list = this.jdbcTemplateS.query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                int i = 0;
+                for (i = 0; i < args.length; i++) {
+                    ps.setObject(i + 1, args[i]);
+                }
+                if (null != limit) {
+                    ps.setObject(i + 1, offset);
+                    ps.setObject(i + 2, limit);
+                }
+            }
+        }, new ResultSetExtractor<List<PK>>() {
+            @Override
+            public List<PK> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<PK> tmp = new ArrayList<PK>();
+
+                while (rs.next()) {
+                    PK v = (PK) JdbcUtils.getResultSetValue(rs, 1, getPKClass());
+                    tmp.add(v);
+                }
+
+                return tmp;
+            }
+
+        });
+
+        return list;
     }
 }

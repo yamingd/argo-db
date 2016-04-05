@@ -1,5 +1,5 @@
 group 'com.github.yamingd.argo'
-version '2.3.3'
+version '2.3.4'
 
 apply plugin: 'maven'
 apply plugin: 'java'
@@ -41,7 +41,7 @@ dependencies {
     }
     compile 'org.springframework:spring-jdbc:3.2.12.RELEASE'
     compile 'org.springframework:spring-tx:3.2.12.RELEASE'
-    compile 'com.alibaba:druid:1.0.16'
+    compile 'com.alibaba:druid:1.0.18'
 
     compile 'org.aspectj:aspectjrt:1.8.7'
     compile 'org.aspectj:aspectjweaver:1.8.7'

@@ -194,6 +194,7 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return List
      */
     List<PK> selectPKs(TableContext context, String orderBy, int limit) throws DataAccessException;
+    List<PK> selectPKs(TableContext context, String orderBy, int offset, int limit) throws DataAccessException;
 
     /**
      * 读取记录
@@ -202,6 +203,7 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return List
      */
     List<T> selectRows(TableContext context, String orderBy, Integer limit) throws DataAccessException;
+    List<T> selectRows(TableContext context, String orderBy, Integer offset, Integer limit) throws DataAccessException;
 
     /**
      * 读取记录
@@ -212,6 +214,7 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return List
      */
     List<T> selectRows(TableContext context, String where, String orderBy, Integer limit, Object[] args) throws DataAccessException;
+    List<T> selectRows(TableContext context, String where, String orderBy, Integer offset, Integer limit, Object[] args) throws DataAccessException;
 
     /**
      * 读取记录
@@ -222,6 +225,7 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return List
      */
     List<PK> selectPks(TableContext context, String where, String orderBy, Integer limit, Object[] args) throws DataAccessException;
+    List<PK> selectPks(TableContext context, String where, String orderBy, Integer offset, Integer limit, Object[] args) throws DataAccessException;
 
     /**
      * 读取PK
