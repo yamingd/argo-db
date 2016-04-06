@@ -139,6 +139,12 @@ public class Values {
                 Long ret = ((Integer)value).longValue();
                 return (T)(ret);
             }
+        }else if (BigDecimal.class.equals(requiredType)){
+            if (Double.class.equals(value.getClass())){
+                return (T)BigDecimal.valueOf((double)value);
+            }else if (Float.class.equals(value.getClass())){
+                return (T)BigDecimal.valueOf((float)value);
+            }
         }
         return null;
     }
