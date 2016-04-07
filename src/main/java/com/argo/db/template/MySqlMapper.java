@@ -631,10 +631,16 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
             }
 
             List<T> dblist = this.selectRowsInDb(context, missids, ascending);
-            for (int i = 0, j=0; i < keys.size(); i++) {
-                if (null != keys.get(i)){
-                    resultList.set(i, dblist.get(j));
-                    j++;
+            for (int i=0; i < dblist.size(); i++){
+                T element = dblist.get(i);
+                if (null != element){
+                    PK pkValue = getPkValue(element);
+                    for (int j=0; j < args.length; j++){
+                        if (args[j].equals(pkValue)){
+                            resultList.set(j, element);
+                            break;
+                        }
+                    }
                 }
             }
 

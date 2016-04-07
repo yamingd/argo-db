@@ -166,7 +166,6 @@ public interface SqlMapper<T, PK extends Comparable> {
      * @return List
      */
     List<T> selectRows(TableContext context, PK[] args, boolean ascending) throws DataAccessException;
-
     /**
      *
      * @param context
