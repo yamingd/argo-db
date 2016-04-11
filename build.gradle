@@ -1,5 +1,5 @@
 group 'com.github.yamingd.argo'
-version '2.3.6'
+version '2.4.0'
 
 apply plugin: 'maven'
 apply plugin: 'java'
@@ -32,7 +32,7 @@ description = 'db common cases'
 dependencies {
     compile 'com.github.yamingd.argo:argo-yaml:1.2'
     compile 'com.github.yamingd.argo:argo-util:2.1'
-    compile 'com.github.yamingd.argo:argo-redis:2.2.0'
+    compile 'com.github.yamingd.argo:argo-redis:2.3.2'
     compile 'com.github.yamingd.argo:annotations:2.2.0'
 
     compile 'org.apache.commons:commons-lang3:3.1'
