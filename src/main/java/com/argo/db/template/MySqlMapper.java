@@ -205,11 +205,18 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
 
     }
 
-
+    /**
+     * 返回主库 JDBC 操作对象
+     * @return JdbcTemplate
+     */
     public JdbcTemplate getJdbcTemplateM() {
         return jdbcTemplateM;
     }
 
+    /**
+     * 返回从库 JDBC 操作对象
+     * @return JdbcTemplate
+     */
     public JdbcTemplate getJdbcTemplateS() {
         return jdbcTemplateS;
     }
@@ -484,7 +491,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     }
 
     @Override
-    public boolean update(String sql, final List<Object> args){
+    public boolean update(String sql, final List<Object> args) throws DataAccessException{
         if (logger.isDebugEnabled() && printSQL){
             logger.debug("update SQL: {}", sql);
         }
@@ -653,7 +660,7 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
     }
 
     @Override
-    public List<T> selectRowsInDb(TableContext context, final List<PK> args, boolean ascending) {
+    public List<T> selectRowsInDb(TableContext context, final List<PK> args, boolean ascending) throws DataAccessException {
         final StringBuilder s = new StringBuilder(128);
         s.append(SELECT).append(getSelectedColumns()).append(FROM).append(getTableName(context))
                 .append(WHERE);
