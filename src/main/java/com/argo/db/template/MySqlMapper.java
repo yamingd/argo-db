@@ -642,8 +642,12 @@ public abstract class MySqlMapper<T, PK extends Comparable> implements Initializ
                 T element = dblist.get(i);
                 if (null != element){
                     PK pkValue = getPkValue(element);
-                    for (int j=0; j < args.length; j++){
-                        if (args[j].equals(pkValue)){
+                    for (int j=0; j < keys.size(); j++){
+                        String sk = keys.get(j);
+                        if (null == sk){
+                            continue;
+                        }
+                        if (sk.endsWith(":" + String.valueOf(pkValue))){
                             resultList.set(j, element);
                             break;
                         }
